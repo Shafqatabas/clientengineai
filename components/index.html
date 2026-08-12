@@ -1,0 +1,1407 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ClientEngine AI — Dashboard</title>
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    --bg: #020817;
+    --panel: #071426;
+    --panel2: #091a30;
+    --border: rgba(37, 99, 235, .35);
+    --blue: #2563eb;
+    --cyan: #06b6d4;
+    --green: #10b981;
+    --purple: #8b5cf6;
+    --orange: #f59e0b;
+    --text: #f8fafc;
+    --muted: #94a3b8;
+}
+
+body {
+    font-family: "Inter", sans-serif;
+    background:
+        radial-gradient(circle at 70% 10%, rgba(6,182,212,.10), transparent 25%),
+        radial-gradient(circle at 20% 80%, rgba(37,99,235,.08), transparent 25%),
+        var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+}
+
+/* ================= SIDEBAR ================= */
+
+.sidebar {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 235px;
+    height: 100vh;
+    background: rgba(3, 13, 28, .94);
+    border-right: 1px solid rgba(37,99,235,.25);
+    padding: 18px 14px;
+    z-index: 20;
+    overflow-y: auto;
+}
+
+.logo-box {
+    height: 82px;
+    border: 1px solid rgba(6,182,212,.35);
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px;
+    margin-bottom: 20px;
+    background: linear-gradient(
+        135deg,
+        rgba(37,99,235,.12),
+        rgba(6,182,212,.04)
+    );
+}
+
+.logo-icon {
+    width: 48px;
+    height: 48px;
+    border: 2px solid var(--cyan);
+    border-radius: 12px;
+    display: grid;
+    place-items: center;
+    font-size: 25px;
+    color: #38bdf8;
+    box-shadow: 0 0 20px rgba(6,182,212,.35);
+}
+
+.logo-text {
+    font-size: 16px;
+    font-weight: 800;
+}
+
+.logo-text span {
+    color: var(--cyan);
+}
+
+.nav {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.nav a {
+    text-decoration: none;
+    color: #94a3b8;
+    padding: 11px 12px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 13px;
+    transition: .2s;
+}
+
+.nav a:hover,
+.nav a.active {
+    color: white;
+    background: linear-gradient(90deg, #2563eb, #0ea5e9);
+    box-shadow: 0 6px 20px rgba(37,99,235,.22);
+}
+
+.nav-icon {
+    width: 22px;
+    text-align: center;
+}
+
+.badge {
+    margin-left: auto;
+    background: #ef4444;
+    color: white;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    display: grid;
+    place-items: center;
+    font-size: 10px;
+}
+
+.engine-box {
+    margin-top: 25px;
+    padding: 15px;
+    border: 1px solid rgba(37,99,235,.3);
+    border-radius: 14px;
+    background: rgba(7,20,38,.8);
+}
+
+.engine-title {
+    font-size: 11px;
+    color: #64748b;
+    margin-bottom: 12px;
+    text-transform: uppercase;
+}
+
+.engine-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 10px 0;
+    font-size: 11px;
+}
+
+.online {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #10b981;
+    box-shadow: 0 0 10px #10b981;
+}
+
+.agency-box {
+    margin-top: 20px;
+    border: 1px solid rgba(37,99,235,.35);
+    border-radius: 14px;
+    padding: 16px;
+    text-align: center;
+}
+
+.agency-name {
+    font-weight: 700;
+    font-size: 12px;
+    margin-bottom: 6px;
+}
+
+.agency-sub {
+    color: var(--muted);
+    font-size: 10px;
+}
+
+/* ================= MAIN ================= */
+
+.main {
+    margin-left: 235px;
+    padding: 15px 18px 40px;
+}
+
+/* TOPBAR */
+
+.topbar {
+    height: 45px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 12px;
+}
+
+.top-left {
+    color: #38bdf8;
+    font-size: 13px;
+}
+
+.top-right {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+.search {
+    width: 265px;
+    background: #061225;
+    border: 1px solid rgba(37,99,235,.35);
+    border-radius: 9px;
+    padding: 9px 13px;
+    color: white;
+    outline: none;
+}
+
+.user {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+}
+
+.avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: linear-gradient(135deg,#0ea5e9,#2563eb);
+    display: grid;
+    place-items: center;
+    font-size: 13px;
+}
+
+/* HERO */
+
+.hero {
+    min-height: 170px;
+    border: 1px solid rgba(37,99,235,.55);
+    border-radius: 16px;
+    background:
+        radial-gradient(circle at 75% 50%, rgba(6,182,212,.13), transparent 25%),
+        linear-gradient(135deg,#07182d,#041021);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 25px 32px;
+    position: relative;
+    overflow: hidden;
+}
+
+.hero:after {
+    content: "";
+    position: absolute;
+    width: 400px;
+    height: 400px;
+    right: -100px;
+    top: -120px;
+    border-radius: 50%;
+    border: 1px solid rgba(6,182,212,.15);
+    box-shadow:
+        0 0 0 30px rgba(6,182,212,.03),
+        0 0 0 60px rgba(6,182,212,.02);
+}
+
+.hero-content {
+    position: relative;
+    z-index: 2;
+}
+
+.hero-title {
+    font-size: clamp(30px, 4vw, 48px);
+    font-weight: 800;
+    letter-spacing: -2px;
+}
+
+.hero-title span {
+    color: #06b6d4;
+}
+
+.hero-subtitle {
+    margin-top: 8px;
+    color: #38bdf8;
+    font-size: 15px;
+}
+
+.coverage {
+    position: relative;
+    z-index: 3;
+    border: 1px solid rgba(37,99,235,.35);
+    background: rgba(3,13,28,.72);
+    border-radius: 14px;
+    padding: 18px 25px;
+    min-width: 220px;
+}
+
+.coverage-title {
+    font-weight: 700;
+    margin-bottom: 12px;
+}
+
+.flags {
+    font-size: 23px;
+    display: flex;
+    gap: 12px;
+}
+
+.coverage small {
+    display: block;
+    color: #94a3b8;
+    margin-top: 10px;
+}
+
+/* SEARCH */
+
+.search-section {
+    margin-top: 13px;
+    display: grid;
+    grid-template-columns: 1fr 285px;
+    gap: 13px;
+}
+
+.panel {
+    background: rgba(7,20,38,.85);
+    border: 1px solid rgba(37,99,235,.4);
+    border-radius: 15px;
+    padding: 18px;
+}
+
+.panel-title {
+    font-size: 17px;
+    font-weight: 700;
+}
+
+.panel-sub {
+    color: #64748b;
+    font-size: 11px;
+    margin-top: 5px;
+}
+
+.controls {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 12px;
+    margin-top: 18px;
+}
+
+.field {
+    background: #041022;
+    border: 1px solid rgba(37,99,235,.35);
+    border-radius: 9px;
+    padding: 12px;
+}
+
+.field label {
+    display: block;
+    color: #38bdf8;
+    font-size: 10px;
+    margin-bottom: 6px;
+}
+
+.field select,
+.field input {
+    width: 100%;
+    border: 0;
+    outline: 0;
+    background: transparent;
+    color: white;
+    font-size: 12px;
+}
+
+.field select option {
+    background: #071426;
+}
+
+.find-btn {
+    border: 0;
+    border-radius: 10px;
+    background: linear-gradient(90deg,#2563eb,#06b6d4);
+    color: white;
+    font-weight: 700;
+    cursor: pointer;
+    font-size: 13px;
+    transition: .2s;
+}
+
+.find-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 8px 25px rgba(6,182,212,.25);
+}
+
+.features {
+    display: flex;
+    gap: 8px;
+    margin-top: 12px;
+    flex-wrap: wrap;
+}
+
+.feature {
+    color: #34d399;
+    background: rgba(16,185,129,.08);
+    border-radius: 30px;
+    padding: 5px 9px;
+    font-size: 9px;
+}
+
+/* ENGINE */
+
+.status {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+}
+
+.status-pill {
+    color: #34d399;
+    font-size: 9px;
+    background: rgba(16,185,129,.1);
+    padding: 6px 8px;
+    border-radius: 20px;
+}
+
+.ai-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+}
+
+.ai-item {
+    padding: 12px;
+    background: #041022;
+    border-radius: 10px;
+    border: 1px solid rgba(37,99,235,.2);
+}
+
+.ai-icon {
+    font-size: 20px;
+    margin-bottom: 7px;
+}
+
+.ai-name {
+    font-size: 10px;
+}
+
+.ai-active {
+    color: #34d399;
+    font-size: 8px;
+    margin-top: 3px;
+}
+
+/* KPI */
+
+.kpis {
+    display: grid;
+    grid-template-columns: repeat(5,1fr);
+    gap: 12px;
+    margin-top: 13px;
+}
+
+.kpi {
+    padding: 16px;
+    border-radius: 13px;
+    background: linear-gradient(145deg,#081a31,#051225);
+    border: 1px solid rgba(37,99,235,.4);
+}
+
+.kpi-icon {
+    font-size: 22px;
+}
+
+.kpi-value {
+    font-size: 23px;
+    font-weight: 800;
+    margin-top: 9px;
+}
+
+.kpi-name {
+    color: #94a3b8;
+    font-size: 10px;
+}
+
+.growth {
+    color: #34d399;
+    font-size: 9px;
+    margin-top: 7px;
+}
+
+/* DATA GRID */
+
+.data-grid {
+    display: grid;
+    grid-template-columns: 1.05fr 1fr 1fr;
+    gap: 13px;
+    margin-top: 13px;
+}
+
+.funnel {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    margin-top: 15px;
+}
+
+.funnel-item {
+    height: 28px;
+    display: grid;
+    place-items: center;
+    font-size: 10px;
+    font-weight: 600;
+    border-radius: 5px;
+}
+
+.f1 { width: 90%; background:#2563eb; }
+.f2 { width: 75%; background:#0891b2; }
+.f3 { width: 60%; background:#14b8a6; }
+.f4 { width: 45%; background:#8b5cf6; }
+.f5 { width: 30%; background:#f59e0b; }
+.f6 { width: 18%; background:#ef4444; }
+
+/* COUNTRY */
+
+.country-list {
+    margin-top: 16px;
+}
+
+.country {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin: 13px 0;
+    font-size: 11px;
+}
+
+.country-bar {
+    height: 5px;
+    background: #17243a;
+    border-radius: 20px;
+    margin-top: 5px;
+}
+
+.country-progress {
+    height: 100%;
+    border-radius: 20px;
+    background: linear-gradient(90deg,#2563eb,#06b6d4);
+}
+
+/* OPPORTUNITIES */
+
+.opportunity {
+    padding: 11px 0;
+    border-bottom: 1px solid rgba(148,163,184,.1);
+    display: flex;
+    justify-content: space-between;
+    font-size: 11px;
+}
+
+.opportunity:last-child {
+    border-bottom: 0;
+}
+
+.score {
+    color: #34d399;
+}
+
+/* ACTIVITY */
+
+.activity {
+    margin-top: 13px;
+}
+
+.timeline {
+    margin-top: 15px;
+}
+
+.event {
+    display: flex;
+    gap: 12px;
+    padding: 10px 0;
+    border-bottom: 1px solid rgba(148,163,184,.08);
+}
+
+.event-dot {
+    width: 27px;
+    height: 27px;
+    flex-shrink: 0;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    background: rgba(37,99,235,.18);
+    color: #38bdf8;
+}
+
+.event-text {
+    font-size: 10px;
+}
+
+.event-text span {
+    display: block;
+    color: #64748b;
+    margin-top: 3px;
+}
+
+/* TABLE */
+
+.table-panel {
+    margin-top: 13px;
+    overflow-x: auto;
+}
+
+.table-head {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 12px;
+}
+
+.view-all {
+    color: #38bdf8;
+    font-size: 10px;
+    cursor: pointer;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 800px;
+}
+
+th {
+    text-align: left;
+    color: #64748b;
+    font-size: 9px;
+    font-weight: 500;
+    padding: 10px;
+    border-bottom: 1px solid rgba(148,163,184,.1);
+}
+
+td {
+    padding: 12px 10px;
+    font-size: 10px;
+    border-bottom: 1px solid rgba(148,163,184,.07);
+}
+
+.company {
+    font-weight: 600;
+}
+
+.email {
+    color: #94a3b8;
+}
+
+.ai-score {
+    background: rgba(16,185,129,.12);
+    color: #34d399;
+    padding: 5px 8px;
+    border-radius: 7px;
+}
+
+.status-ready {
+    color: #34d399;
+}
+
+.status-follow {
+    color: #fbbf24;
+}
+
+.status-draft {
+    color: #38bdf8;
+}
+
+.action-btn {
+    border: 1px solid rgba(37,99,235,.4);
+    background: transparent;
+    color: #38bdf8;
+    border-radius: 5px;
+    padding: 5px 8px;
+    cursor: pointer;
+}
+
+/* RESPONSIVE */
+
+@media(max-width:1100px) {
+    .sidebar {
+        width: 75px;
+    }
+
+    .logo-text,
+    .nav a span:not(.nav-icon),
+    .engine-box,
+    .agency-box {
+        display: none;
+    }
+
+    .logo-box {
+        justify-content: center;
+    }
+
+    .main {
+        margin-left: 75px;
+    }
+
+    .search-section {
+        grid-template-columns: 1fr;
+    }
+
+    .data-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .kpis {
+        grid-template-columns: repeat(3,1fr);
+    }
+}
+
+@media(max-width:700px) {
+    .main {
+        padding: 10px;
+    }
+
+    .top-left {
+        display: none;
+    }
+
+    .search {
+        width: 150px;
+    }
+
+    .hero {
+        padding: 20px;
+    }
+
+    .coverage {
+        display: none;
+    }
+
+    .controls {
+        grid-template-columns: 1fr;
+    }
+
+    .kpis {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .hero-title {
+        font-size: 30px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<!-- SIDEBAR -->
+<aside class="sidebar">
+
+    <div class="logo-box">
+        <div class="logo-icon">ϟ</div>
+        <div class="logo-text">
+            ClientEngine <span>AI</span>
+        </div>
+    </div>
+
+    <nav class="nav">
+
+        <a href="#" class="active">
+            <span class="nav-icon">⌂</span>
+            <span>Dashboard</span>
+        </a>
+
+        <a href="#">
+            <span class="nav-icon">⌕</span>
+            <span>Find Leads</span>
+        </a>
+
+        <a href="#">
+            <span class="nav-icon">▤</span>
+            <span>Lead Database</span>
+        </a>
+
+        <a href="#">
+            <span class="nav-icon">➤</span>
+            <span>AI Outreach</span>
+        </a>
+
+        <a href="#">
+            <span class="nav-icon">◴</span>
+            <span>Follow-ups</span>
+            <span class="badge">5</span>
+        </a>
+
+        <a href="#">
+            <span class="nav-icon">▥</span>
+            <span>Campaigns</span>
+        </a>
+
+        <a href="#">
+            <span class="nav-icon">◔</span>
+            <span>Analytics</span>
+        </a>
+
+        <a href="#">
+            <span class="nav-icon">✉</span>
+            <span>Email Templates</span>
+        </a>
+
+        <a href="#">
+            <span class="nav-icon">⚙</span>
+            <span>Settings</span>
+        </a>
+
+    </nav>
+
+    <div class="engine-box">
+
+        <div class="engine-title">
+            AI Engine Status
+        </div>
+
+        <div class="engine-item">
+            <span class="online"></span>
+            OpenAI GPT-4o
+        </div>
+
+        <div class="engine-item">
+            <span class="online"></span>
+            Modal
+        </div>
+
+        <div class="engine-item">
+            <span class="online"></span>
+            Supabase
+        </div>
+
+        <div class="engine-item">
+            <span class="online"></span>
+            SMTP / Resend
+        </div>
+
+    </div>
+
+    <div class="agency-box">
+        <div class="agency-name">
+            Rai Marketing Agency
+        </div>
+        <div class="agency-sub">
+            Digital Growth Solutions
+        </div>
+    </div>
+
+</aside>
+
+
+<!-- MAIN -->
+<main class="main">
+
+    <!-- TOP BAR -->
+    <div class="topbar">
+
+        <div class="top-left">
+            ✦ &nbsp; Find. Engage. Convert. Grow.
+        </div>
+
+        <div class="top-right">
+
+            <input
+                class="search"
+                type="text"
+                placeholder="Search leads, companies..."
+            >
+
+            <span>🔔</span>
+            <span>⚙</span>
+
+            <div class="user">
+                <div class="avatar">SA</div>
+                <div>
+                    <strong style="font-size:11px;">Shafqat Abbas</strong>
+                    <small style="display:block;color:#64748b;font-size:9px;">
+                        Founder
+                    </small>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+
+    <!-- HERO -->
+    <section class="hero">
+
+        <div class="hero-content">
+
+            <h1 class="hero-title">
+                ClientEngine <span>AI</span>
+            </h1>
+
+            <p class="hero-subtitle">
+                AI-Powered Lead Generation & Outreach Platform
+            </p>
+
+        </div>
+
+        <div class="coverage">
+
+            <div class="coverage-title">
+                🌐 Global Coverage
+            </div>
+
+            <div class="flags">
+                🇺🇸 🇬🇧 🇨🇦 🇩🇪
+            </div>
+
+            <small>
+                4 Countries Active
+            </small>
+
+        </div>
+
+    </section>
+
+
+    <!-- SEARCH SECTION -->
+    <section class="search-section">
+
+        <div class="panel">
+
+            <div class="panel-title">
+                Find Your Next Customers
+            </div>
+
+            <div class="panel-sub">
+                Tell us your industry and location, and let AI find & analyze potential clients.
+            </div>
+
+            <div class="controls">
+
+                <div class="field">
+                    <label>INDUSTRY / NICHE</label>
+
+                    <select id="industry">
+                        <option>Roofing Contractors</option>
+                        <option>HVAC Companies</option>
+                        <option>Dental Clinics</option>
+                        <option>Real Estate</option>
+                        <option>Law Firms</option>
+                        <option>Construction Companies</option>
+                        <option>Restaurants</option>
+                        <option>E-commerce</option>
+                    </select>
+                </div>
+
+                <div class="field">
+                    <label>LOCATION / COUNTRY</label>
+
+                    <select id="country">
+                        <option>United States (USA)</option>
+                        <option>United Kingdom (UK)</option>
+                        <option>Canada</option>
+                        <option>Germany</option>
+                    </select>
+                </div>
+
+                <button class="find-btn" onclick="findLeads()">
+                    🔍 Find Potential Customers →
+                </button>
+
+            </div>
+
+            <div class="features">
+
+                <div class="feature">✓ Auto Search</div>
+                <div class="feature">✓ Verify Emails</div>
+                <div class="feature">✓ Analyze Websites</div>
+                <div class="feature">✓ Score Leads</div>
+                <div class="feature">✓ Generate Emails</div>
+
+            </div>
+
+        </div>
+
+
+        <!-- AI STATUS -->
+        <div class="panel">
+
+            <div class="status">
+
+                <strong>AI Engine Status</strong>
+
+                <span class="status-pill">
+                    ● All Systems Online
+                </span>
+
+            </div>
+
+            <div class="ai-grid">
+
+                <div class="ai-item">
+                    <div class="ai-icon">🌐</div>
+                    <div class="ai-name">Web Scraping</div>
+                    <div class="ai-active">● Active</div>
+                </div>
+
+                <div class="ai-item">
+                    <div class="ai-icon">🧠</div>
+                    <div class="ai-name">AI Analysis</div>
+                    <div class="ai-active">● Active</div>
+                </div>
+
+                <div class="ai-item">
+                    <div class="ai-icon">✉</div>
+                    <div class="ai-name">Email Generation</div>
+                    <div class="ai-active">● Active</div>
+                </div>
+
+                <div class="ai-item">
+                    <div class="ai-icon">▥</div>
+                    <div class="ai-name">Lead Scoring</div>
+                    <div class="ai-active">● Active</div>
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- KPIs -->
+    <section class="kpis">
+
+        <div class="kpi">
+            <div class="kpi-icon">👥</div>
+            <div class="kpi-value" id="leads">247</div>
+            <div class="kpi-name">Leads Found</div>
+            <div class="growth">↗ +12%</div>
+        </div>
+
+        <div class="kpi">
+            <div class="kpi-icon">✓</div>
+            <div class="kpi-value">183</div>
+            <div class="kpi-name">Verified Leads</div>
+            <div class="growth">↗ +8%</div>
+        </div>
+
+        <div class="kpi">
+            <div class="kpi-icon">✉</div>
+            <div class="kpi-value">126</div>
+            <div class="kpi-name">Emails Ready</div>
+            <div class="growth">↗ +15%</div>
+        </div>
+
+        <div class="kpi">
+            <div class="kpi-icon">➤</div>
+            <div class="kpi-value">94</div>
+            <div class="kpi-name">Emails Sent</div>
+            <div class="growth">↗ +12%</div>
+        </div>
+
+        <div class="kpi">
+            <div class="kpi-icon">●</div>
+            <div class="kpi-value">17</div>
+            <div class="kpi-name">Replies</div>
+            <div class="growth">↗ +6%</div>
+        </div>
+
+    </section>
+
+
+    <!-- DATA -->
+    <section class="data-grid">
+
+        <!-- PIPELINE -->
+        <div class="panel">
+
+            <div class="panel-title">
+                Lead Generation Pipeline
+            </div>
+
+            <div class="funnel">
+
+                <div class="funnel-item f1">
+                    Found — 247
+                </div>
+
+                <div class="funnel-item f2">
+                    Verified — 183
+                </div>
+
+                <div class="funnel-item f3">
+                    Qualified — 152
+                </div>
+
+                <div class="funnel-item f4">
+                    Contacted — 94
+                </div>
+
+                <div class="funnel-item f5">
+                    Replied — 17
+                </div>
+
+                <div class="funnel-item f6">
+                    Meetings — 5
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- COUNTRY -->
+        <div class="panel">
+
+            <div class="panel-title">
+                Country Distribution
+            </div>
+
+            <div class="country-list">
+
+                <div class="country">
+                    <div style="width:70%;">
+                        🇺🇸 USA
+                        <div class="country-bar">
+                            <div class="country-progress" style="width:35%;"></div>
+                        </div>
+                    </div>
+                    <strong>35%</strong>
+                </div>
+
+                <div class="country">
+                    <div style="width:70%;">
+                        🇬🇧 UK
+                        <div class="country-bar">
+                            <div class="country-progress" style="width:25%;"></div>
+                        </div>
+                    </div>
+                    <strong>25%</strong>
+                </div>
+
+                <div class="country">
+                    <div style="width:70%;">
+                        🇨🇦 Canada
+                        <div class="country-bar">
+                            <div class="country-progress" style="width:22%;"></div>
+                        </div>
+                    </div>
+                    <strong>22%</strong>
+                </div>
+
+                <div class="country">
+                    <div style="width:70%;">
+                        🇩🇪 Germany
+                        <div class="country-bar">
+                            <div class="country-progress" style="width:18%;"></div>
+                        </div>
+                    </div>
+                    <strong>18%</strong>
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- OPPORTUNITIES -->
+        <div class="panel">
+
+            <div class="panel-title">
+                Top Opportunities
+            </div>
+
+            <div class="opportunity">
+                <span>Weak Google Ads</span>
+                <span class="score">72 leads →</span>
+            </div>
+
+            <div class="opportunity">
+                <span>No Lead Form</span>
+                <span class="score">58 leads →</span>
+            </div>
+
+            <div class="opportunity">
+                <span>Poor SEO</span>
+                <span class="score">49 leads →</span>
+            </div>
+
+            <div class="opportunity">
+                <span>Slow Website</span>
+                <span class="score">41 leads →</span>
+            </div>
+
+            <div class="opportunity">
+                <span>No Social Media</span>
+                <span class="score">37 leads →</span>
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- ACTIVITY -->
+    <section class="panel activity">
+
+        <div class="panel-title">
+            Recent Activity
+        </div>
+
+        <div class="timeline">
+
+            <div class="event">
+                <div class="event-dot">+</div>
+                <div class="event-text">
+                    <b>New lead added</b>
+                    <span>ABC Roofing Solutions — USA · 2 min ago</span>
+                </div>
+            </div>
+
+            <div class="event">
+                <div class="event-dot">✓</div>
+                <div class="event-text">
+                    <b>Email verified</b>
+                    <span>john@abcroofing.com · 5 min ago</span>
+                </div>
+            </div>
+
+            <div class="event">
+                <div class="event-dot">✦</div>
+                <div class="event-text">
+                    <b>AI analysis completed</b>
+                    <span>XYZ Contractors — UK · 8 min ago</span>
+                </div>
+            </div>
+
+            <div class="event">
+                <div class="event-dot">➤</div>
+                <div class="event-text">
+                    <b>Email sent</b>
+                    <span>mike@xyzroofers.co.uk · 12 min ago</span>
+                </div>
+            </div>
+
+            <div class="event">
+                <div class="event-dot">●</div>
+                <div class="event-text">
+                    <b>Reply received</b>
+                    <span>Smith Roofing — Canada · 18 min ago</span>
+                </div>
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- LEADS TABLE -->
+    <section class="panel table-panel">
+
+        <div class="table-head">
+
+            <div class="panel-title">
+                Recent High-Value Leads
+            </div>
+
+            <div class="view-all">
+                View All →
+            </div>
+
+        </div>
+
+        <table>
+
+            <thead>
+                <tr>
+                    <th>COMPANY</th>
+                    <th>LOCATION</th>
+                    <th>EMAIL</th>
+                    <th>AI SCORE</th>
+                    <th>OPPORTUNITY</th>
+                    <th>STATUS</th>
+                    <th>ACTIONS</th>
+                </tr>
+            </thead>
+
+            <tbody>
+
+                <tr>
+                    <td class="company">ABC Roofing Solutions</td>
+                    <td>🇺🇸 Dallas, TX</td>
+                    <td class="email">john@abcroofing.com</td>
+                    <td><span class="ai-score">91/100</span></td>
+                    <td>No Google Ads</td>
+                    <td class="status-ready">Ready</td>
+                    <td>
+                        <button class="action-btn">View</button>
+                        <button class="action-btn">✈</button>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td class="company">XYZ Contractors</td>
+                    <td>🇬🇧 London</td>
+                    <td class="email">mike@xyzroofers.co.uk</td>
+                    <td><span class="ai-score">87/100</span></td>
+                    <td>Weak Website CTA</td>
+                    <td class="status-ready">Ready</td>
+                    <td>
+                        <button class="action-btn">View</button>
+                        <button class="action-btn">✈</button>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td class="company">Smith Roofing</td>
+                    <td>🇨🇦 Toronto</td>
+                    <td class="email">info@smithroofing.ca</td>
+                    <td><span class="ai-score">82/100</span></td>
+                    <td>Poor SEO</td>
+                    <td class="status-follow">Follow-up</td>
+                    <td>
+                        <button class="action-btn">View</button>
+                        <button class="action-btn">✈</button>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td class="company">Dachbau Berlin</td>
+                    <td>🇩🇪 Berlin</td>
+                    <td class="email">kontakt@dachbau.de</td>
+                    <td><span class="ai-score">79/100</span></td>
+                    <td>No Lead Form</td>
+                    <td class="status-draft">Draft</td>
+                    <td>
+                        <button class="action-btn">View</button>
+                        <button class="action-btn">✈</button>
+                    </td>
+                </tr>
+
+            </tbody>
+
+        </table>
+
+    </section>
+
+</main>
+
+
+<script>
+
+function findLeads() {
+
+    const industry =
+        document.getElementById("industry").value;
+
+    const country =
+        document.getElementById("country").value;
+
+    const button =
+        document.querySelector(".find-btn");
+
+    button.innerHTML = "⏳ Searching...";
+
+    setTimeout(() => {
+
+        button.innerHTML =
+            "✓ Search Started";
+
+        alert(
+            "AI Lead Search Started\n\n" +
+            "Industry: " + industry +
+            "\nCountry: " + country +
+            "\n\nYour AI pipeline can now connect to your Modal backend."
+        );
+
+        setTimeout(() => {
+            button.innerHTML =
+                "🔍 Find Potential Customers →";
+        }, 1500);
+
+    }, 1200);
+}
+
+
+/* Navigation */
+document.querySelectorAll(".nav a").forEach(link => {
+
+    link.addEventListener("click", function(e) {
+
+        e.preventDefault();
+
+        document.querySelectorAll(".nav a")
+            .forEach(item => item.classList.remove("active"));
+
+        this.classList.add("active");
+
+    });
+
+});
+
+</script>
+
+</body>
+</html>

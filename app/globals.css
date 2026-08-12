@@ -1,0 +1,73 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    background-color: #080511;
+    color: #f3f4f6;
+    font-family: 'Inter', sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+/* Custom Navigation Offset for Smooth Scroll (Navbar height 80px) */
+:target {
+  scroll-margin-top: 80px;
+}
+
+/* Custom Keyframes for Spin-Slow (Hero Background) */
+@keyframes spin-slow {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.animate-spin-slow {
+  animation: spin-slow 20s linear infinite;
+}
+
+@layer components {
+  /* Zajno/Dribbble Style Deep Glassmorphism Effect */
+  .glass-card {
+    background: rgba(13, 9, 27, 0.75); /* Darker base for contrast */
+    backdrop-filter: blur(18px) saturate(180%); /* Stronger blur & saturation */
+    -webkit-backdrop-filter: blur(18px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.08); /* White border for top highlight */
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4); /* Deep outer shadow */
+  }
+
+  /* Interaction effect for cards */
+  .glass-card-hover {
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  }
+
+  .glass-card-hover:hover {
+    border-color: rgba(168, 85, 247, 0.5); /* Purple Border on Hover */
+    box-shadow: 0 15px 40px rgba(124, 58, 237, 0.25); /* Purple Glow on Hover */
+    transform: translateY(-4px) scale(1.01); /* Elevate and slight scale */
+  }
+
+  /* Specific border highlight for cards - Zajno style top edge */
+  .glass-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    padding: 1px; 
+    background: linear-gradient(to bottom right, rgba(255,255,255,0.1), transparent 40%, transparent 60%, rgba(168, 85, 247, 0.1));
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    pointer-events: none;
+  }
+}
