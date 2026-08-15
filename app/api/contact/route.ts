@@ -3,7 +3,8 @@ import nodemailer from 'nodemailer';
 
 export async function POST(req: Request) {
   try {
-    const { name, email, agency, message } = await req.json();
+    const body = await req.json();
+    const { name, email, agency, message } = body;
 
     if (!name || !email || !message) {
       return NextResponse.json(
@@ -19,12 +20,15 @@ export async function POST(req: Request) {
       secure: true,
       auth: {
         user: process.env.SMTP_USER || 'hello@raimarketingagency.online',
-        pass: process.env.SMTP_PASS || '', // Yahan aap apne email ka password lagayenge
+        pass: process.env.SMTP_PASS, 
       },
     });
 
-    await transporter.sendMail({
-      from: `"ClientEngine AI" <hello@raimarketingagency.online>`,
+    // Verify transporter configuration before sending
+    await transporter.verify();
+
+    const mailOptions = {
+      from: `"ClientEngine AI" <${process.env.SMTP_USER || 'hello@raimarketingagency.online'}>`,
       to: 'hello@raimarketingagency.online',
       subject: `New Lead: ${name} (${agency || 'Independent'})`,
       text: `Name: ${name}\nEmail: ${email}\nAgency: ${agency || 'N/A'}\nMessage: ${message}`,
@@ -40,16 +44,18 @@ export async function POST(req: Request) {
           </div>
         </div>
       `,
-    });
+    };
+
+    await transporter.sendMail(mailOptions);
 
     return NextResponse.json(
       { message: 'Email sent successfully' },
       { status: 200 }
     );
-  } catch (error) {
-    console.error('Contact Form Error:', error);
+  } catch (error: any) {
+    console.error('Detailed Contact Form Error:', error);
     return NextResponse.json(
-      { message: 'Internal server error' },
+      { message: error.message || 'Internal server error' },
       { status: 500 }
     );
   }
