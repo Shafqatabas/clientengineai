@@ -74,14 +74,40 @@ function CheckoutContent() {
 
   const activeAccount = paymentAccounts[selectedMethod];
 
-  const handleSubmitProof = (e: React.FormEvent) => {
+  const handleSubmitProof = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
 
-    setTimeout(() => {
+    try {
+      const formData = new FormData();
+      formData.append('planKey', planKey);
+      formData.append('selectedMethod', selectedMethod);
+      formData.append('senderNumber', senderNumber);
+      formData.append('trxId', trxId);
+
+      const fileInput = document.querySelector('input[type="file"]') as HTMLInputElement;
+      if (fileInput?.files?.[0]) {
+        formData.append('receipt', fileInput.files[0]);
+      }
+
+      const response = await fetch('/api/checkout', {
+        method: 'POST',
+        body: formData, // FormData automatically sets correct headers
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        setIsSuccess(true);
+      } else {
+        alert(data.message || 'Failed to submit payment proof.');
+      }
+    } catch (error) {
+      console.error('Submission error:', error);
+      alert('Network error. Please try again.');
+    } finally {
       setIsSubmitting(false);
-      setIsSuccess(true);
-    }, 1500);
+    }
   };
 
   return (
