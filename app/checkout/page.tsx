@@ -103,7 +103,7 @@ function CheckoutContent() {
 
         {isSuccess ? (
           <div className="p-8 sm:p-12 rounded-3xl bg-slate-900/60 border border-emerald-500/40 text-center max-w-2xl mx-auto backdrop-blur-xl shadow-2xl">
-            <div className="w-16 h-16 rounded-full bg-emerald-500/20 border-2 border-emerald-400 flex items-center justify-center mx-auto mb-6 text-emerald-400 text-2xl animate-bounce">
+            <div className="w-16 h-16 rounded-full bg-emerald-500/20 border-2 border-emerald-400 flex items-center justify-center mx-auto mb-6 text-emerald-400 text-2xl">
               <i className="fa-solid fa-check"></i>
             </div>
             <h2 className="text-2xl sm:text-3xl font-extrabold text-white mb-3">Payment Submitted!</h2>
@@ -212,15 +212,15 @@ function CheckoutContent() {
                   </div>
 
                   {activeAccount.qrImage && (
-                    <div className="pt-3 pb-2 flex flex-col items-center justify-center border-t border-slate-800/80">
-                      <div className="w-56 h-56 bg-white rounded-xl p-3 flex items-center justify-center shadow-lg mb-2 relative overflow-hidden">
+                    <div className="pt-4 pb-2 flex flex-col items-center justify-center border-t border-slate-800/80">
+                      <div className="w-72 h-72 sm:w-80 sm:h-80 bg-white rounded-2xl p-4 flex items-center justify-center shadow-xl mb-3 relative overflow-hidden">
                         <img 
                           src={activeAccount.qrImage} 
                           alt="Payment QR Code" 
-                          className="w-full h-full object-contain rounded-lg"
+                          className="w-full h-full object-contain rounded-xl"
                         />
                       </div>
-                      <span className="text-[11px] text-slate-400 font-mono">Scan QR via App (Large View)</span>
+                      <span className="text-xs text-slate-300 font-mono font-semibold">Scan QR via App (Extra Large View)</span>
                     </div>
                   )}
 
