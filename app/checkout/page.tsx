@@ -3,6 +3,7 @@
 import { useState, Suspense } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
+import Image from 'next/image';
 
 interface PaymentAccount {
   title: string;
@@ -10,6 +11,7 @@ interface PaymentAccount {
   accountTitle: string;
   instructions: string;
   iban?: string;
+  qrImage?: string;
 }
 
 function CheckoutContent() {
@@ -18,7 +20,7 @@ function CheckoutContent() {
 
   const planKey = searchParams.get('plan') || 'cold-outreach';
 
-  const [selectedMethod, setSelectedMethod] = useState<'jazzcash' | 'easypaisa' | 'bank' | 'nayapay'>('jazzcash');
+  const [selectedMethod, setSelectedMethod] = useState<'jazzcash' | 'bank' | 'nayapay'>('jazzcash');
   const [trxId, setTrxId] = useState('');
   const [senderNumber, setSenderNumber] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -46,29 +48,25 @@ function CheckoutContent() {
 
   const paymentAccounts: Record<string, PaymentAccount> = {
     jazzcash: {
-      title: 'JazzCash Mobile Wallet',
-      accountNumber: '0300 0000000',
+      title: 'JazzCash Business Account & QR',
+      accountNumber: '0316 6025651',
       accountTitle: 'Rai Marketing Agency',
-      instructions: 'Send exact amount via JazzCash app or *786# and enter TRX ID below.',
-    },
-    easypaisa: {
-      title: 'EasyPaisa Mobile Wallet',
-      accountNumber: '0310 0000000',
-      accountTitle: 'Rai Marketing Agency',
-      instructions: 'Send exact amount via EasyPaisa app and save the transaction receipt.',
+      instructions: 'Scan QR code via JazzCash app or send exact amount to business account and enter TRX ID below.',
+      qrImage: '/jazzcashqrcode.jpeg',
     },
     bank: {
-      title: 'Bank Transfer (Meezan Bank)',
+      title: 'Meezan Bank Transfer & QR',
       accountNumber: '0101 0101 0101 01',
       iban: 'PK00MEZN00010101010101',
       accountTitle: 'Rai Marketing Agency',
-      instructions: 'Transfer via Raast or IBFT and upload the confirmation screenshot.',
+      instructions: 'Scan bank QR or transfer via Raast/IBFT and upload the confirmation receipt.',
+      qrImage: '/aikbankqrcode.jpeg',
     },
     nayapay: {
-      title: 'SadaPay / NayaPay',
-      accountNumber: '0300 0000000',
-      accountTitle: 'Rai Marketing Agency',
-      instructions: 'Send amount directly via SadaPay or NayaPay mobile wallet.',
+      title: 'NayaPay / SadaPay',
+      accountNumber: '0316 6025651',
+      accountTitle: 'Shafqat Abbas',
+      instructions: 'Send amount directly via NayaPay or SadaPay mobile wallet.',
     },
   };
 
@@ -144,7 +142,7 @@ function CheckoutContent() {
               <div className="p-6 sm:p-8 rounded-3xl bg-slate-900/50 border border-slate-800 backdrop-blur-xl space-y-4">
                 <h2 className="text-sm font-bold text-white uppercase tracking-wider font-mono">Select Payment Method</h2>
                 
-                <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                <div className="grid grid-cols-3 gap-3">
                   <button
                     type="button"
                     onClick={() => setSelectedMethod('jazzcash')}
@@ -156,19 +154,6 @@ function CheckoutContent() {
                   >
                     <i className="fa-solid fa-mobile-screen-button text-base text-amber-400"></i>
                     <span>JazzCash</span>
-                  </button>
-
-                  <button
-                    type="button"
-                    onClick={() => setSelectedMethod('easypaisa')}
-                    className={`p-3 rounded-xl border text-xs font-bold transition flex flex-col items-center justify-center space-y-1.5 cursor-pointer ${
-                      selectedMethod === 'easypaisa'
-                        ? 'border-purple-500 bg-purple-500/10 text-white'
-                        : 'border-slate-800 bg-slate-950/60 text-slate-400 hover:border-slate-700'
-                    }`}
-                  >
-                    <i className="fa-solid fa-wallet text-base text-emerald-400"></i>
-                    <span>EasyPaisa</span>
                   </button>
 
                   <button
@@ -194,7 +179,7 @@ function CheckoutContent() {
                     }`}
                   >
                     <i className="fa-solid fa-credit-card text-base text-indigo-400"></i>
-                    <span>SadaPay / NayaPay</span>
+                    <span>NayaPay</span>
                   </button>
                 </div>
 
@@ -217,6 +202,19 @@ function CheckoutContent() {
                       </div>
                     )}
                   </div>
+
+                  {activeAccount.qrImage && (
+                    <div className="pt-3 pb-2 flex flex-col items-center justify-center border-t border-slate-800/80">
+                      <div className="w-36 h-36 bg-white rounded-xl p-2 flex items-center justify-center shadow-md mb-2 relative overflow-hidden">
+                        <img 
+                          src={activeAccount.qrImage} 
+                          alt="Payment QR Code" 
+                          className="w-full h-full object-contain rounded-lg"
+                        />
+                      </div>
+                      <span className="text-[10px] text-slate-400 font-mono">Scan QR via App</span>
+                    </div>
+                  )}
 
                   <p className="text-[11px] text-slate-400 pt-2 border-t border-slate-800/80 leading-relaxed">
                     {activeAccount.instructions}
@@ -284,8 +282,8 @@ function CheckoutContent() {
                   <div className="pt-4 border-t border-slate-800/80 text-center">
                     <p className="text-[11px] text-slate-400">
                       Need help? Chat via WhatsApp: <br />
-                      <a href="https://wa.me/92166025651" target="_blank" rel="noreferrer" className="text-emerald-400 font-bold hover:underline">
-                        +92 1660 25651
+                      <a href="https://wa.me/923166025651" target="_blank" rel="noreferrer" className="text-emerald-400 font-bold hover:underline">
+                        +92 316 6025651
                       </a>
                     </p>
                   </div>
