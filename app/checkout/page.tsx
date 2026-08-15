@@ -11,6 +11,7 @@ interface PaymentAccount {
   accountTitle: string;
   instructions: string;
   iban?: string;
+  tillId?: string;
   qrImage?: string;
 }
 
@@ -49,7 +50,7 @@ function CheckoutContent() {
   const paymentAccounts: Record<string, PaymentAccount> = {
     jazzcash: {
       title: 'JazzCash Business Account & QR',
-      accountNumber: '0316 6025651',
+      accountNumber: '0348-2927952',
       accountTitle: 'Rai Marketing Agency',
       instructions: 'Scan QR code via JazzCash app or send exact amount to business account and enter TRX ID below.',
       qrImage: '/jazzcashqrcode.jpeg',
@@ -58,6 +59,7 @@ function CheckoutContent() {
       title: 'Meezan Bank Transfer & QR',
       accountNumber: '0101 0101 0101 01',
       iban: 'PK00MEZN00010101010101',
+      tillId: '150036454',
       accountTitle: 'Rai Marketing Agency',
       instructions: 'Scan bank QR or transfer via Raast/IBFT and upload the confirmation receipt.',
       qrImage: '/aikbankqrcode.jpeg',
@@ -101,7 +103,7 @@ function CheckoutContent() {
 
         {isSuccess ? (
           <div className="p-8 sm:p-12 rounded-3xl bg-slate-900/60 border border-emerald-500/40 text-center max-w-2xl mx-auto backdrop-blur-xl shadow-2xl">
-            <div className="w-16 h-16 rounded-full bg-emerald-500/20 border-2 border-emerald-400 flex items-center justify-center mx-auto mb-6 text-emerald-400 text-2xl animate-bounce">
+            <div className="w-16 h-16 rounded-full bg-emerald-500/20 border-2 border-emerald-400 flex items-center justify-center mx-auto mb-6 text-emerald-400 text-2xl">
               <i className="fa-solid fa-check"></i>
             </div>
             <h2 className="text-2xl sm:text-3xl font-extrabold text-white mb-3">Payment Submitted!</h2>
@@ -195,6 +197,12 @@ function CheckoutContent() {
                       <span>Account / Mobile No:</span>
                       <span className="text-emerald-400 font-bold">{activeAccount.accountNumber}</span>
                     </div>
+                    {activeAccount.tillId && (
+                      <div className="flex justify-between text-slate-300">
+                        <span>Account Till ID:</span>
+                        <span className="text-amber-400 font-bold">{activeAccount.tillId}</span>
+                      </div>
+                    )}
                     {activeAccount.iban && (
                       <div className="flex justify-between text-slate-300">
                         <span>IBAN:</span>
@@ -204,15 +212,15 @@ function CheckoutContent() {
                   </div>
 
                   {activeAccount.qrImage && (
-                    <div className="pt-3 pb-2 flex flex-col items-center justify-center border-t border-slate-800/80">
-                      <div className="w-36 h-36 bg-white rounded-xl p-2 flex items-center justify-center shadow-md mb-2 relative overflow-hidden">
+                    <div className="pt-4 pb-2 flex flex-col items-center justify-center border-t border-slate-800/80">
+                      <div className="w-72 h-72 sm:w-80 sm:h-80 bg-white rounded-2xl p-4 flex items-center justify-center shadow-xl mb-3 relative overflow-hidden">
                         <img 
                           src={activeAccount.qrImage} 
                           alt="Payment QR Code" 
-                          className="w-full h-full object-contain rounded-lg"
+                          className="w-full h-full object-contain rounded-xl"
                         />
                       </div>
-                      <span className="text-[10px] text-slate-400 font-mono">Scan QR via App</span>
+                      <span className="text-xs text-slate-300 font-mono font-semibold">Scan QR via App (Extra Large View)</span>
                     </div>
                   )}
 
